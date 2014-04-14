@@ -1,16 +1,16 @@
 require 'test_helper'
 
-class GlobalizeAccessorsTest < ActiveSupport::TestCase
+class TranslatedAccessorsTest < ActiveSupport::TestCase
 
   class Unit < ActiveRecord::Base
     translates :name, :title
-    globalize_accessors
+    translated_accessors
   end
 
   class UnitTranslatedWithOptions < ActiveRecord::Base
     self.table_name = :units
     translates :name
-    globalize_accessors :locales => [:pl], :attributes => [:name]
+    translated_accessors :locales => [:pl], :attributes => [:name]
   end
 
   class UnitInherited < UnitTranslatedWithOptions
@@ -18,7 +18,7 @@ class GlobalizeAccessorsTest < ActiveSupport::TestCase
 
   class UnitInheritedWithOptions < ActiveRecord::Base
     translates :color
-    globalize_accessors :locales => [:de], :attributes => [:color]
+    translated_accessors :locales => [:de], :attributes => [:color]
   end
 
   if ENV['RAILS_3']
@@ -26,14 +26,14 @@ class GlobalizeAccessorsTest < ActiveSupport::TestCase
       self.table_name = :units
       attr_accessible :name
       translates :name, :title
-      globalize_accessors
+      translated_accessors
     end
   end
 
   class UnitWithDashedLocales < ActiveRecord::Base
     self.table_name = :units
     translates :name
-    globalize_accessors :locales => [:"pt-BR", :"en-AU"], :attributes => [:name]
+    translated_accessors :locales => [:"pt-BR", :"en-AU"], :attributes => [:name]
   end
 
   setup do
@@ -118,12 +118,12 @@ class GlobalizeAccessorsTest < ActiveSupport::TestCase
     end
   end
 
-  test "globalize locales on class without locales specified in options" do
-    assert_equal [:en, :pl], Unit.globalize_locales
+  test "available locales on class without locales specified in options" do
+    assert_equal [:en, :pl], Unit.available_locales
   end
 
-  test "globalize locales on class with locales specified in options" do
-    assert_equal [:pl], UnitTranslatedWithOptions.globalize_locales
+  test "available locales on class with locales specified in options" do
+    assert_equal [:pl], UnitTranslatedWithOptions.available_locales
   end
 
   test "read and write on class with dashed locales" do
@@ -144,26 +144,26 @@ class GlobalizeAccessorsTest < ActiveSupport::TestCase
     assert_equal "Name en-AU",  u.name_en_au
   end
 
-  test "globalize attribute names on class without attributes specified in options" do
-    assert_equal [:name_en, :name_pl, :title_en, :title_pl], Unit.globalize_attribute_names
+  test "translated attribute names on class without attributes specified in options" do
+    assert_equal [:name_en, :name_pl, :title_en, :title_pl], Unit.translated_attribute_names
   end
 
-  test "globalize attribute names on class with attributes specified in options" do
-    assert_equal [:name_pl], UnitTranslatedWithOptions.globalize_attribute_names
+  test "translated attribute names on class with attributes specified in options" do
+    assert_equal [:name_pl], UnitTranslatedWithOptions.translated_attribute_names
   end
 
-  test "inherit globalize locales and attributes" do
-    assert_equal [:name_pl], UnitInherited.globalize_attribute_names
-    assert_equal [:pl], UnitInherited.globalize_locales
+  test "inherit available locales and translated attributes" do
+    assert_equal [:name_pl], UnitInherited.translated_attribute_names
+    assert_equal [:pl], UnitInherited.available_locales
   end
 
-  test "overwrite inherited globalize locales and attributes" do
-    assert_equal [:color_de], UnitInheritedWithOptions.globalize_attribute_names
-    assert_equal [:de], UnitInheritedWithOptions.globalize_locales
+  test "overwrite inherited available locales and translated attributes" do
+    assert_equal [:color_de], UnitInheritedWithOptions.translated_attribute_names
+    assert_equal [:de], UnitInheritedWithOptions.available_locales
   end
 
-  test "instance cannot set globalize locales or attributes" do
-    assert_raise(NoMethodError) { Unit.new.globalize_attribute_names = [:name] }
-    assert_raise(NoMethodError) { Unit.new.globalize_locales = [:en, :de] }
+  test "instance cannot set available locales or translated attributes" do
+    assert_raise(NoMethodError) { Unit.new.translated_attribute_names = [:name] }
+    assert_raise(NoMethodError) { Unit.new.available_locales = [:en, :de] }
   end
 end

@@ -1,4 +1,4 @@
-require 'i18n'
+require 'I18n'
 I18n.available_locales = [:en, :pl]
 
 require 'test/unit'
@@ -6,7 +6,7 @@ require 'active_support'
 require 'active_support/test_case'
 require 'logger'
 
-require 'globalize-accessors'
+require 'translated-accessors'
 
 plugin_test_dir = File.dirname(__FILE__)
 

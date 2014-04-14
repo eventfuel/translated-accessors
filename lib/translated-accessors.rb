@@ -1,27 +1,21 @@
-require 'globalize'
-
-module Globalize::Accessors
-  def globalize_accessors(options = {})
+module Translated::Accessors
+  def translated_accessors(options = {})
     options.reverse_merge!(:locales => I18n.available_locales, :attributes => translated_attribute_names)
-    class_attribute :globalize_locales, :globalize_attribute_names, :instance_writer => false
+    class_attribute :available_locales, :translated_attribute_names, :instance_writer => false
 
-    self.globalize_locales = options[:locales]
-    self.globalize_attribute_names = []
+    self.available_locales = options[:locales]
+    self.translated_attribute_names = []
 
     each_attribute_and_locale(options) do |attr_name, locale|
       define_accessors(attr_name, locale)
     end
   end
 
-
   private
-
-
   def define_accessors(attr_name, locale)
     define_getter(attr_name, locale)
     define_setter(attr_name, locale)
   end
-
 
   def define_getter(attr_name, locale)
     define_method :"#{attr_name}_#{locale.to_s.underscore}" do
@@ -31,14 +25,13 @@ module Globalize::Accessors
 
   def define_setter(attr_name, locale)
     localized_attr_name = "#{attr_name}_#{locale.to_s.underscore}"
-
     define_method :"#{localized_attr_name}=" do |value|
       write_attribute(attr_name, value, :locale => locale)
     end
     if respond_to?(:accessible_attributes) && accessible_attributes.include?(attr_name)
       attr_accessible :"#{localized_attr_name}"
     end
-    self.globalize_attribute_names << localized_attr_name.to_sym
+    self.translated_attribute_names << localized_attr_name.to_sym
   end
 
   def each_attribute_and_locale(options)
@@ -48,7 +41,6 @@ module Globalize::Accessors
       end
     end
   end
-
 end
 
-ActiveRecord::Base.extend Globalize::Accessors
+ActiveRecord::Base.extend Translated::Accessors

@@ -13,7 +13,7 @@ require 'rake'
 desc 'Default: run unit tests.'
 task :default => :test
 
-desc 'Test globalize-accessors gem.'
+desc 'Test translated-accessors gem.'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
   t.libs << 'test'
@@ -21,10 +21,10 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = true
 end
 
-desc 'Generate documentation for globalize-accessors gem.'
+desc 'Generate documentation for translated-accessors gem.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'EasyGlobalizeAccessors'
+  rdoc.title    = 'TranslatedAccessors'
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
